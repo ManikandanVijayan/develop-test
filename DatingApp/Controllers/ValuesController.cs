@@ -21,6 +21,7 @@ namespace DatingApp.Controllers
 
 
         // GET: api/<ValuesController>
+
         [HttpGet]
         public IActionResult Get()
         {
