@@ -1,0 +1,30 @@
+Transient objects are always different; a new instance is provided to every controller and every service.
+
+Scoped objects are the same within a request, but different across different requests
+
+Singleton objects are the same for every object and every request (regardless of whether an instance is provided in ConfigureServices)
+
+
+Singleton which creates a single instance throughout the application. It creates the instance for the first time and reuses the same object in the all calls.
+
+Scoped lifetime services are created once per request within the scope. It is equivalent to a singleton in the current scope. For example, in MVC it creates one instance for each HTTP request, but it uses the same instance in the other calls within the same web request.
+
+Transient lifetime services are created each time they are requested. This lifetime works best for lightweight, stateless services
+
+
+Scoped is a single instance for the duration of the scoped request, which means per HTTP request in ASP.NET.
+Transient is a single instance per code request.
+
+
+Transient
+AnEWSERVICEINSTANCEISCREATEDEVERYTIMEEVENIFITISTHESAMEREQUETS
+
+sCOPED
+ONESERVICEINSTANCEISCREATEDFOREACHREQUESTANDRESUSEDTHROGHOUTTHEREQUEST
+
+Ex- In the above example the id for the request will remain same as the same request is redirected to another controller method. But at the same time if another request is made to the controller then it will be assigned a fresh id.
+
+
+
+
+Transient=The object of these services are created newly every time a controller or service class is called or executed. ex: lets consider a request is made to a web api controller method ‘xcontroller’ as a transient then the request will be assigned a unique id, now from inside that controller the request is redirected to another controller method for further execution, then the same request id will be replaced with a fresh request id.
