@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.Data;
 using DatingApp.Helpers;
 using Microsoft.AspNetCore.Authentication;
@@ -19,6 +20,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
+
 
 namespace DatingApp
 {
@@ -37,6 +40,8 @@ namespace DatingApp
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:token").Value);
             //additionaly
             services.AddCors();
+            services.AddTransient<Seed>();
+            services.AddAutoMapper(typeof(Startup));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -49,6 +54,7 @@ namespace DatingApp
                 });
             //dependencyinjection
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
 
 
             var con = Configuration.GetConnectionString("DefaultConnection");
@@ -57,11 +63,11 @@ namespace DatingApp
                 x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddControllers();
-           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Seed seed)
         {
             if (env.IsDevelopment())
             {
@@ -88,6 +94,7 @@ namespace DatingApp
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            //seed.SeedUsers();
             //
             //app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             app.UseCors(x => x
@@ -96,7 +103,7 @@ namespace DatingApp
                .SetIsOriginAllowed(origin => true) // allow any origin
                .AllowCredentials());
 
-
+            app.UseAuthentication(); 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
