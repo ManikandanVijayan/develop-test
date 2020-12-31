@@ -42,6 +42,7 @@ namespace DatingApp
             services.AddCors();
             services.AddTransient<Seed>();
             services.AddAutoMapper(typeof(Startup));
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -63,6 +64,8 @@ namespace DatingApp
                 x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddControllers();
+            services.AddScoped<LogUserActivity>();
+            //if globally filter then add inside addMuc()
 
         }
 

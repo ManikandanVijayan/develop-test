@@ -19,6 +19,21 @@ namespace DatingApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
+            modelBuilder.Entity("DatingApp.Model.Like", b =>
+                {
+                    b.Property<int>("LikerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LikeeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LikerId", "LikeeId");
+
+                    b.HasIndex("LikeeId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("DatingApp.Model.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -34,6 +49,9 @@ namespace DatingApp.Migrations
 
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
@@ -114,6 +132,25 @@ namespace DatingApp.Migrations
                     b.ToTable("Values");
                 });
 
+            modelBuilder.Entity("DatingApp.Model.Like", b =>
+                {
+                    b.HasOne("DatingApp.Model.User", "Liker")
+                        .WithMany("Likee")
+                        .HasForeignKey("LikeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DatingApp.Model.User", "Likee")
+                        .WithMany("Liker")
+                        .HasForeignKey("LikerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Likee");
+
+                    b.Navigation("Liker");
+                });
+
             modelBuilder.Entity("DatingApp.Model.Photo", b =>
                 {
                     b.HasOne("DatingApp.Model.User", "User")
@@ -127,6 +164,10 @@ namespace DatingApp.Migrations
 
             modelBuilder.Entity("DatingApp.Model.User", b =>
                 {
+                    b.Navigation("Likee");
+
+                    b.Navigation("Liker");
+
                     b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
